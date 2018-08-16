@@ -1,0 +1,27 @@
+{
+  "desired": {
+    "welcome": "aws-iot",
+    "on": false
+  },
+  "reported": {
+    "welcome": "aws-iot",
+    "on": true,
+    "ota": {
+      "message": "idle",
+      "status": 0,
+      "is_committed": true,
+      "commit_timeout": 0,
+      "partition": 0,
+      "progress_percent": 0,
+      "fw_version": "1.0",
+      "fw_id": "20180804-065901/???",
+      "mac": "620194296496",
+      "device_id": "esp8266_296496",
+      "app": "ota-shadow",
+      "arch": "esp8266"
+    }
+  },
+  "delta": {
+    "on": false
+  }
+}

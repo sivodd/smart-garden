@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Meli</string>
+    <string name="editText">editText</string>
+    <string name="temp_button">View Temperature</string>
+    <string name="back_button">Menu</string>
+    <string name="hum_button">view humidity</string>
+    <string name="title_activity_timer">TimerActivity</string>
+    <string name="action_settings">Menu</string>
+    <string name="Connect">Connect</string>
+    <string name="Disconnect">Disconnect</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_water">WaterActivity</string>
+
+</resources>

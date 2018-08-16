@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.example.sivan.meli"
+        minSdkVersion 23
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildToolsVersion '26.0.2'
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/menu'] } }
+}
+
+dependencies {
+    implementation 'com.jjoe64:graphview:4.2.1' // graph view
+
+    implementation 'com.amazonaws:aws-android-sdk-core:2.2.+' //changed compile to implementation
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.2.+' // 31.8 - don't think i need this.
+    implementation 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
+    implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.2.+'
+    implementation 'com.amazonaws:aws-android-sdk-iot:2.6.+' // for pubsub
+
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    //    for design
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    //  end design
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+//    compile ('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true }
+    //for timer circle bar
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.4.2'
+    // for timer preferences
+    implementation 'com.pavelsikun:material-seekbar-preference:2.3.0+'
+
+}
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'kotlin-android-extensions'

@@ -56,32 +56,47 @@ public class TempActivity extends AppCompatActivity {
         DynamoDBQueryExpression<Sensor> queryExpression = new DynamoDBQueryExpression<Sensor>()
                 .withHashKeyValues(sensorKey)
                 .withScanIndexForward(false)
-                .withLimit(10);
+                .withLimit(180);
 
         QueryResultPage<Sensor> queryResult = mapper.queryPage(Sensor.class, queryExpression);
         List<Sensor> result = queryResult.getResults();
 
 // graph
+        long two_hours = (120 * 60 * 1000);
         int y;
-        Date x;
+        Date x, prev;
         Sensor sensor_item;
         GraphView graph = (GraphView) findViewById(R.id.graph);
         series = new LineGraphSeries<DataPoint>();
         Iterator iterator = result.iterator();
         int resultIndex = result.size() - 1;
         Sensor first = result.get(resultIndex);
+
+        //        initiate prev
+        Calendar cali = Calendar.getInstance(locale);
+        cali.setTimeInMillis(Long.parseLong(first.getTimestamp()));
+        cali.add(Calendar.HOUR_OF_DAY, 1);
+        prev = cali.getTime();
+
         while (resultIndex >= 0){
 
             sensor_item = result.get(resultIndex);
             Calendar cal = Calendar.getInstance(locale);
             cal.setTimeInMillis(Long.parseLong(sensor_item.getTimestamp()));
+            cal.add(Calendar.HOUR_OF_DAY, 1);
             Log.d("MyApp",sensor_item.getDevice() + cal.getTime());
             //print the time and device sampled to log
             x = cal.getTime();
-            y= Integer.parseInt(sensor_item.getTemp());
-            if (y != -1) {
-                series.appendData(new DataPoint(x, y), true, 100);
+            //sample every two hours
+            if (x.getTime()-two_hours >= prev.getTime()) {
+                y= Integer.parseInt(sensor_item.getTemp());
+                if (y != -1) {
+                    series.appendData(new DataPoint(x, y), true, 100);
+                    prev = x;
+                }
+
             }
+
             resultIndex--;
         }
         Sensor last = result.get(resultIndex+1);
@@ -90,10 +105,12 @@ public class TempActivity extends AppCompatActivity {
         graph.getViewport().setYAxisBoundsManual(true);
         Calendar fcal = Calendar.getInstance(locale);
         fcal.setTimeInMillis(Long.parseLong(first.getTimestamp()));
+        fcal.add(Calendar.HOUR_OF_DAY, 1);
         Date fdate = fcal.getTime();
         graph.getViewport().setMinX(fdate.getTime());
         Calendar lcal = Calendar.getInstance(locale);
         lcal.setTimeInMillis(Long.parseLong(last.getTimestamp()));
+        lcal.add(Calendar.HOUR_OF_DAY, 1);
         Date ldate = lcal.getTime();
         graph.getViewport().setMinX(fdate.getTime());
         graph.getViewport().setMaxX(ldate.getTime());

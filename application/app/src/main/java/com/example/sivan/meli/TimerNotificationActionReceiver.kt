@@ -47,6 +47,7 @@ class TimerNotificationActionReceiver : BroadcastReceiver() {
                 TimerActivity.mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0)
                 TimerActivity.timer_state = "Running"
             }
+
             AppConstants.ACTION_START -> {
                 val minutesRemaining = PrefUtil.getTimerLength(context)
                 val secondsRemaining = minutesRemaining * 60L

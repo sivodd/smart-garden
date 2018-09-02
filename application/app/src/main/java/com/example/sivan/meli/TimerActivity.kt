@@ -114,6 +114,7 @@ class TimerActivity : AppCompatActivity() {
         supportActionBar?.setIcon(R.drawable.ic_timer)
         supportActionBar?.title = "      Timer"
 
+
         fab_start.setOnClickListener{v ->
             if(!connected) {
                 val text = "firs press connect"
@@ -125,7 +126,7 @@ class TimerActivity : AppCompatActivity() {
                 timerState =  TimerState.Running
                 updateButtons()
                 val topic = "\$aws/things/esp8266_296496/shadow/update"
-                val msg = "{\"state\":{\"desired\":{\"on\":true}}}" // ADD THE TIME HERE
+                val msg = "{\"state\":{\"desired\":{\"on\":true}}}"
 
                 try {
                     mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0)
@@ -437,6 +438,14 @@ class TimerActivity : AppCompatActivity() {
         timer = object : CountDownTimer(secondsRemaining * 1000, 1000) {
             override fun onFinish() {
                 onTimerFinished()
+//                val topic = "\$aws/things/esp8266_296496/shadow/update"
+//                val msg = "{\"state\":{\"desired\":{\"on\":false}}}" // set the timer to 0
+//
+//                try {
+//                    mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0)
+//                } catch (e: Exception) {
+//                    Log.e(LOG_TAG, "Publish error.", e)
+//                }
             }
 
 

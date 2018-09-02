@@ -13,8 +13,9 @@ import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+import com.example.sivan.meli.util.PrefUtil;
 
-import java.util.List;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String temp_string;
         String hum_string;
         String light_string;
+        String timer_string;
+        new com.example.sivan.meli.util.PrefUtil();
+        timer_string = com.example.sivan.meli.util.PrefUtil.Companion.getTimerState(getApplicationContext()).toString();
 
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),
@@ -78,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (resIndex == limit)
             temp_string = "error";
-        hum_string = Integer.toString(Sensor.getHumidity()*100/1024);
+        hum_string = Integer.toString((1024-Sensor.getHumidity())*100/1024);
         if (Sensor.getLight()==0)
             light_string = "Sunny";
         else light_string = "Dark";
@@ -90,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         temp.setText(temp_string);
         hum.setText(hum_string);
         light.setText(light_string);
-        timer.setText("Off");
+        timer.setText(timer_string);
 
 
         tempCard.setOnClickListener(this);

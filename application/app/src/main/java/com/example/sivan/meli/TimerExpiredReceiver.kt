@@ -19,5 +19,6 @@ class TimerExpiredReceiver : BroadcastReceiver() {
         val msg = "{\"state\":{\"desired\":{\"on\":false}}}"
         TimerActivity.mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0)
         TimerActivity.timer_state = "Off"
+
     }
 }

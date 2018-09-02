@@ -19,17 +19,9 @@ public class Sensor {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
     @DynamoDBHashKey(attributeName = "device_name") // changed DynamoDBIndexHashKey.
     public String getDevice() {
         return device;
-    }
-
-    public void setDevice(String device) {
-        this.device = device;
     }
 
     @DynamoDBAttribute(attributeName = "temp")
@@ -39,23 +31,29 @@ public class Sensor {
         return temp;
     }
 
-    public void setTemp(String temp) {
-        this.temp = temp;
-    }
-
     @DynamoDBAttribute(attributeName = "humidity")
     public int getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(int humidity) {
-        this.humidity = humidity;
-    }
-
-
     @DynamoDBAttribute(attributeName = "light")
     public int getLight() {
         return light;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+    public void setTemp(String temp) {
+        this.temp = temp;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
     }
 
     public void setLight(int light) {

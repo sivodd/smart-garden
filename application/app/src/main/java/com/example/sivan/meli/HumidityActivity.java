@@ -3,15 +3,11 @@ package com.example.sivan.meli;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.util.Log;
-import android.widget.Button;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.QueryResultPage;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -23,7 +19,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,7 +53,7 @@ public class HumidityActivity extends AppCompatActivity {
         DynamoDBQueryExpression<Sensor> queryExpression = new DynamoDBQueryExpression<Sensor>()
                 .withHashKeyValues(sensorKey)
                 .withScanIndexForward(false)
-                .withLimit(10);
+                .withLimit(180);
 
         QueryResultPage<Sensor> queryResult = mapper.queryPage(Sensor.class, queryExpression);
         List<Sensor> result = queryResult.getResults();
@@ -70,14 +65,22 @@ public class HumidityActivity extends AppCompatActivity {
 //        PaginatedScanList<Sensor> result = mapper.scan(Sensor.class, scanExpression);
 
 // graph
+        long two_hours = (120 * 60 * 1000);
         int y;
-        Date x;
+        Date x, prev;
         int resultIndex = result.size() - 1;
         Sensor sensor_item;
         GraphView graph = (GraphView) findViewById(R.id.hum_graph);
         series = new LineGraphSeries<DataPoint>();
         Sensor first = result.get(resultIndex);
-        Iterator<Sensor> iterator = result.iterator();
+
+//        initiate prev
+        Calendar cali = Calendar.getInstance(locale);
+        cali.setTimeInMillis(Long.parseLong(first.getTimestamp()));
+        cali.add(Calendar.HOUR_OF_DAY, 1);
+        prev = cali.getTime();
+
+//        Iterator<Sensor> iterator = result.iterator();
 //        ArrayList<Sensor> sensorList = ArrayList<Sensor>(result.size());
 //        ListIterator listIterator = result.listIterator(result.size());
         while (resultIndex >= 0){
@@ -87,12 +90,17 @@ public class HumidityActivity extends AppCompatActivity {
 //            sensor_item = iterator.next();
             Calendar cal = Calendar.getInstance(locale);
             cal.setTimeInMillis(Long.parseLong(sensor_item.getTimestamp()));
-            Log.d("MyApp",sensor_item.getDevice() + cal.getTime());
+            Log.d("MyApp",sensor_item.getDevice() + cal.getTime() + cal);
+            cal.add(Calendar.HOUR_OF_DAY, 1);
             //print the time and device sampled to log
             x = cal.getTime();
-            y = sensor_item.getHumidity()*100/1024;
-            series.appendData(new DataPoint(x, y), true, 100);
+            if (x.getTime()-two_hours >= prev.getTime()) {
+                y = (1024 - sensor_item.getHumidity()) * 100 / 1024;
+                series.appendData(new DataPoint(x, y), true, 100);
+                prev = x;
+            }
             resultIndex--;
+
         }
         Sensor last = result.get(resultIndex+1);
         graph.addSeries(series);
@@ -100,10 +108,12 @@ public class HumidityActivity extends AppCompatActivity {
         graph.getViewport().setYAxisBoundsManual(true);
         Calendar fcal = Calendar.getInstance(locale);
         fcal.setTimeInMillis(Long.parseLong(first.getTimestamp()));
+        fcal.add(Calendar.HOUR_OF_DAY, 1);
         Date fdate = fcal.getTime();
         graph.getViewport().setMinX(fdate.getTime());
         Calendar lcal = Calendar.getInstance(locale);
         lcal.setTimeInMillis(Long.parseLong(last.getTimestamp()));
+        lcal.add(Calendar.HOUR_OF_DAY, 1);
         Date ldate = lcal.getTime();
         graph.getViewport().setMinX(fdate.getTime());
         graph.getViewport().setMaxX(ldate.getTime());

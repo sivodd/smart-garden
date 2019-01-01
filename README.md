@@ -1,5 +1,6 @@
 # SMART-GARDEN 
-## An IOT system integrated into the AWS and Android app
+### An IOT system integrated into the AWS and an Android app
+
 
 In this project, I developed an automatic, Wi-Fi based, irrigation system controlled and monitored by a cellphone application. 
 
